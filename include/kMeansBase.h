@@ -1,8 +1,11 @@
-import <iostream>;
 import <cmath>;
+import <iostream>;
 import <string>;
+import <vector>;
+
 #include <armadillo>
 #include <format>
+#include "dataReader.h"
 
 class kMeansBase {
 	friend std::ostream& operator<<(std::ostream&, const kMeansBase&);
@@ -13,11 +16,17 @@ public:
 	kMeansBase() = default;
 	kMeansBase(int numPts) : numPoints(numPts) {
 		std::cout << "you only initialized the number of points in the database, The number of Groups (K) will be set to 2\n"
-			<< "If you want to set the number of groups manually you can call the class again or use the setNumK method";
+			<< "If you want to set the number of groups manually you can call the class again with two parameters or use the setNumK method.";
 	}
 	kMeansBase(int numK, int numPts): kNum(numK), numPoints(numPts){
 		points = arma::mat(numPoints, 2, arma::fill::zeros);
 		centerPoints = arma::mat(kNum, 2, arma::fill::zeros);
+	}
+	kMeansBase(int numK, std::string dataAdr) : kNum(numK) {
+		dataReader myData(dataAdr);
+		points = myData.dataMat;
+		centerPoints = arma::mat(kNum, points.n_cols, arma::fill::zeros);
+		preLoadedData = true;
 	}
 	int calcPointDist(const arma::rowvec&, const arma::rowvec&);
 
@@ -38,6 +47,8 @@ public:
 	void calcNewCentroids();
 	bool checkErrImprove(const arma::mat);
 
+	virtual ~kMeansBase(){}
+
 protected:
 	std::string modelName{ "Base" };
 	int numPoints{ 0 };
@@ -45,6 +56,7 @@ protected:
 	int scaleFactor{ 50 };
 	arma::mat points;
 	arma::mat centerPoints;
+	bool preLoadedData{ false };
 };
 
 
@@ -73,14 +85,14 @@ kMeansBase& kMeansBase::setNumK(int numK) {
 void kMeansBase::scaleStandard() {
 
 	arma::mat tempPoints = points;
-	arma::rowvec meanVec(2, arma::fill::zeros);
+	arma::rowvec meanVec(points.n_cols, arma::fill::zeros);
 
 	// Sum of the points coordinates by column
 	meanVec = arma::sum(points, 0);
 	meanVec /= points.n_rows;
 
 	// Calculate the standard deviation
-	for (int i{ 0 }; i < 2; ++i) {
+	for (int i{ 0 }; i < points.n_cols; ++i) {
 		tempPoints.col(i) = tempPoints.col(i) - meanVec(i);
 	}
 
@@ -90,7 +102,7 @@ void kMeansBase::scaleStandard() {
 	stdVec /= points.n_rows;
 	stdVec = arma::sqrt(stdVec);
 
-	for (int i{ 0 }; i < 2; ++i) {
+	for (int i{ 0 }; i < points.n_cols; ++i) {
 		points.col(i) = (points.col(i) - meanVec(i)) / stdVec(i);
 	}
 
@@ -137,7 +149,7 @@ kMeansBase& kMeansBase::calcDistanceTotal() {
 
 
 kMeansBase& kMeansBase::searchCenters() {
-	genPoints();
+	if(!preLoadedData){ genPoints(); }
 	initCenterPts();
 
 	// Insert col for K Group Number
@@ -156,7 +168,7 @@ kMeansBase& kMeansBase::searchCenters() {
 		calcNewCentroids();
 
 		centerPoints.print();
-		std::cout << "-----------" << std::endl;
+		std::cout << "---------------------\n";
 
 		// Check to see how much we have improved
 		bool checkImprov = checkErrImprove(tempCenters);
@@ -202,7 +214,7 @@ void kMeansBase::calcNewCentroids() {
 		// Doing the mean
 		sumVec /= rowCounter;
 
-		// Removing the last column since it is the group number
+		// Dropping the last column since it is the group number
 		sumVec = sumVec.subvec(0, colNums - 2);
 
 		// This if prevents adding a zero coordinate for the centerPoints that have no subset

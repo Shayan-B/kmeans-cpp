@@ -3,7 +3,6 @@
 
 import <format>;
 
-
 class kMeans : public kMeansBase {
     friend std::ostream& operator<<(std::ostream&, const kMeans&);
 
@@ -11,8 +10,11 @@ public:
 	kMeans() = default;
     kMeans(int a) : kMeansBase(a){}
 	kMeans(int a, int b) : kMeansBase(a, b){}
+    kMeans(int a, std::string dataAdr): kMeansBase(a, dataAdr) {}
 
 	kMeans& initCenterPts();
+
+    ~kMeans() = default;
 
 protected:
     std::string modelName{ "kMeans" };
@@ -23,7 +25,7 @@ kMeans& kMeans::initCenterPts() {
 
     scaleStandard();
 
-    centerPoints = arma::mat(kNum, 2, arma::fill::zeros);
+    centerPoints = arma::mat(kNum, points.n_cols, arma::fill::zeros);
 
     // Create a random vector and scale it to the number of points to see which points have got chosen
     arma::rowvec chosNum(kNum, arma::fill::randu);
@@ -41,9 +43,8 @@ kMeans& kMeans::initCenterPts() {
 }
 
 // A function to custom print the class
-// A function to custom print the class
 std::ostream& operator<<(std::ostream& os, const kMeans& kmn) {
-    os << "----------------------\n"
+    os << "---------------------\n"
         << std::format("Algorithm {}:\n", kmn.modelName);
     os << static_cast<kMeansBase const&>(kmn) << "\n";
     return os;
@@ -57,11 +58,14 @@ public:
     kMeanspp() = default;
     kMeanspp(int a) : kMeansBase(a) {}
     kMeanspp(int a, int b) : kMeansBase(a, b) {}
+    kMeanspp(int a, std::string dataAdr) : kMeansBase(a, dataAdr) {}
 
     kMeanspp& initCenterPts();
     // Utility functions
     arma::uword findMaxDist(arma::colvec, arma::rowvec);
     int genRndNum(int);
+
+    ~kMeanspp() = default;
 
 protected:
     std::string modelName{ "kMeansPP" };
@@ -71,7 +75,7 @@ kMeanspp& kMeanspp::initCenterPts() {
 
     scaleStandard();
 
-    centerPoints = arma::mat(kNum, 2, arma::fill::zeros);
+    centerPoints = arma::mat(kNum, points.n_cols, arma::fill::zeros);
 
     arma::rowvec centerIdx(kNum, arma::fill::zeros);
     arma::colvec distVec(points.n_rows, arma::fill::zeros);

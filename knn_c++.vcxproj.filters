@@ -26,5 +26,8 @@
     <ClInclude Include="include\kMeans.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\dataReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
