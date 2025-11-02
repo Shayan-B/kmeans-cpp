@@ -1,6 +1,3 @@
-// TODO : add class for reading the data from csv file with n dimensions
-// TODO : expand the dimension of the points from 2 to n
-
 #include <armadillo>
 #include "include/kMeans.h"
 #include "include/csv.hpp"
@@ -15,7 +12,7 @@ int main() {
     kmeansPts.searchCenters();
 
     std::cout << "Programs is done.\n";
-    //std::cout << kmeansPts;
+    std::cout << kmeansPts;
 
     return 0;
 }

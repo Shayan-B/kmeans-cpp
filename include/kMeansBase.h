@@ -23,10 +23,14 @@ public:
 		centerPoints = arma::mat(kNum, 2, arma::fill::zeros);
 	}
 	kMeansBase(int numK, std::string dataAdr) : kNum(numK) {
+		
 		dataReader myData(dataAdr);
 		points = myData.dataMat;
+		
 		centerPoints = arma::mat(kNum, points.n_cols, arma::fill::zeros);
+		
 		preLoadedData = true;
+		numPoints = points.n_rows;
 	}
 	int calcPointDist(const arma::rowvec&, const arma::rowvec&);
 

@@ -1,5 +1,3 @@
-// TODO: Class should have a data matrix as the outout for other classes.
-
 import <iostream>;
 import <string>;
 
