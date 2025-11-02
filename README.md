@@ -32,8 +32,8 @@ The repository follows a standard Visual Studio 2022 project layout:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/KMeans-CPP.git
-   cd KMeans-CPP
+   git clone https://github.com/Shayan-B/kmeans-cpp.git
+   cd kmeans-cpp
    ```
 
 2. Open the solution in Visual Studio 2022:
