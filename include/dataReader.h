@@ -20,6 +20,7 @@ private:
 dataReader& dataReader::readCsvData() {
     std::vector<double> fieldData;
     csv::CSVReader reader(fileAdr);
+    std::cout << "Yo";
     int rowCntr{ 0 };
     int rowSize{ 1 };
 

@@ -32,15 +32,23 @@ public:
 		preLoadedData = true;
 		numPoints = points.n_rows;
 	}
-	int calcPointDist(const arma::rowvec&, const arma::rowvec&);
 
+	
+	// Generate random points for data points
 	kMeansBase& genPoints();
 
 	// Initialization of center points - will be different in each of the child classes
 	virtual kMeansBase& initCenterPts();
+	
+	// If th enumber of k is not given at the initialization, use this
 	kMeansBase& setNumK(int);
+
+	// Calculate the total distance for the points
 	kMeansBase& calcDistanceTotal();
 
+	// Calculate point-wise distance
+	int calcPointDist(const arma::rowvec&, const arma::rowvec&);
+	
 	// Main function to call
 	kMeansBase& searchCenters();
 
@@ -55,11 +63,14 @@ public:
 
 protected:
 	std::string modelName{ "Base" };
+	
 	int numPoints{ 0 };
 	int kNum{ 2 };
 	int scaleFactor{ 50 };
+	
 	arma::mat points;
 	arma::mat centerPoints;
+	
 	bool preLoadedData{ false };
 };
 

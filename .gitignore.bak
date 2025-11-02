@@ -403,5 +403,3 @@ FodyWeavers.xsd
 
 # debug information files
 *.dwo
-
-bck/
